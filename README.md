@@ -1,9 +1,6 @@
 Yii2 PHP Excel
 ==============
 
-[![Latest Stable Version](https://poser.pugx.org/moonlandsoft/yii2-phpexcel/v/stable)](https://packagist.org/packages/moonlandsoft/yii2-phpexcel) 
-[![Total Downloads](https://poser.pugx.org/moonlandsoft/yii2-phpexcel/downloads)](https://packagist.org/packages/moonlandsoft/yii2-phpexcel) 
-[![Latest Unstable Version](https://poser.pugx.org/moonlandsoft/yii2-phpexcel/v/unstable)](https://packagist.org/packages/moonlandsoft/yii2-phpexcel) 
 [![License](https://poser.pugx.org/moonlandsoft/yii2-phpexcel/license)](https://packagist.org/packages/moonlandsoft/yii2-phpexcel)
 
 Exporting PHP to Excel or Importing Excel to PHP.
@@ -42,6 +39,12 @@ boolean `$setIndexSheetByName` to set the sheet index by sheet name or array res
 string `$getOnlySheet` is a sheet name to getting the data. This is only get the sheet with same name.
 
 array|Formatter `$formatter` the formatter used to format model attribute values into displayable texts. This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]] instance. If this property is not set, the "formatter" application component will be used.
+
+boolean `$freezeHeader` set freeze header
+
+boolean `$autoFilter` set auto filter to header
+
+array `$headerStyle` header style  in array format for PhpSpreadsheet 
 
 Installation
 ------------
@@ -148,10 +151,15 @@ Columns in string mode valid layout are 'attribute:format:header:footer(TODO)'.
       		[
       				'attribute' => 'content',
       				'header' => 'Content Post',
-      				'format' => 'text',
+      				'format' => 'text', // ['decimal',3], 'date'
       				'value' => function($model) {
       					return ExampleClass::removeText('example', $model->content);
       				},
+      				'visible' => true,
+      				'autoSize' => true,
+      				'excelWidth' => 50,
+      				'excelWrap' => true
+      				
       		],
       		'like_it:text:Reader like this content',
       		'created_at:datetime',
@@ -233,6 +241,46 @@ Array([file1] => Array([0] => Array([name] => Anam, [email] => moh.khoirul.anaam
 
 // data with multiple file and multiple worksheet
 Array([file1] => Array([Sheet1] => Array([0] => Array([name] => Anam, [email] => moh.khoirul.anaam@gmail.com, [framework interest] => Yii2), [1] => Array([name] => Example, [email] => example@moonlandsoft.com, [framework interest] => Yii2)), [Sheet2] => Array([0] => Array([name] => Anam, [email] => moh.khoirul.anaam@gmail.com, [framework interest] => Yii2), [1] => Array([name] => Example, [email] => example@moonlandsoft.com, [framework interest] => Yii2))), [file2] => Array([Sheet1] => Array([0] => Array([name] => Anam, [email] => moh.khoirul.anaam@gmail.com, [framework interest] => Yii2), [1] => Array([name] => Example, [email] => example@moonlandsoft.com, [framework interest] => Yii2)), [Sheet2] => Array([0] => Array([name] => Anam, [email] => moh.khoirul.anaam@gmail.com, [framework interest] => Yii2), [1] => Array([name] => Example, [email] => example@moonlandsoft.com, [framework interest] => Yii2))));
+
+```
+
+With title
+----------
+
+```php
+$labels = [
+    [
+        'label' => 'Pārskats',
+        'class' => 'title'
+    ],
+];
+
+
+$title = new TableTdCell('title');
+$title->class = 'title';
+$title->colspan = 11;
+
+$titleClassStyle = [
+    'title' => [
+        'font' => [
+            'size' => 16,
+        ],
+        'alignment' => [
+            'horizontal' => 'center',
+        ],
+    ],
+];
+
+Excel::widget([
+    'models' => $dataProvider->getModels(),
+    'mode' => 'export', //default value as 'export'
+    'fileName' => 'month_total_' . date('ymdHi'),
+    'columns' => $columns,
+    //'' => 'LSEZ SIA "Ekers Stividors LP", BMZ apl.  Nr. 40',
+    //'headers' => $headers
+    'titleRows' => [[$title]],
+    'loadDataInExcelStyle' => $titleClassStyle
+]);
 
 ```
 
