@@ -826,7 +826,7 @@ class Excel extends Widget
             $fileName = $this->fileName;
         }
 
-        $pathinfo = pathinfo($this->fileName);
+        $pathinfo = pathinfo($fileName);
         if (!isset($pathinfo['extension'])) {
             $extensionMap = [
                 'Xlsx' => '.xlsx',
