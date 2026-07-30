@@ -536,7 +536,7 @@ class Excel extends Widget
                         ->applyFromArray($column['headerStyle']);
                 }
                 if ($this->freezeHeader) {
-                    $activeSheet->freezePaneByColumnAndRow(1, $row + 1);
+                    $activeSheet->freezePane('A' . ($row + 1));
                 }
                 if ($this->autoFilter) {
                     $activeSheet->setAutoFilter('A' . $row . ':' . $col . $row);
